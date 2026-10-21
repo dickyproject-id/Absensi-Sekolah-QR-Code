@@ -131,7 +131,7 @@ class _StudentScreenState extends State<StudentScreen> {
               top: 40,
               right: 20,
               child: CircleAvatar(
-                backgroundColor: Colors.black.withOpacity(0.5),
+                backgroundColor: Colors.black.withValues(alpha: 0.5),
                 radius: 20,
                 child: IconButton(
                   padding: EdgeInsets.zero,
@@ -196,8 +196,10 @@ class _StudentScreenState extends State<StudentScreen> {
 
       // 4. CEK LOKASI
       Position pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.medium,
-        timeLimit: const Duration(seconds: 10),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+          timeLimit: Duration(seconds: 10),
+        ),
       );
 
       double distance = Geolocator.distanceBetween(
@@ -234,6 +236,7 @@ class _StudentScreenState extends State<StudentScreen> {
           : "Hadir";
 
       if (status == "Terlambat") {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Anda Terlambat!"),
@@ -383,10 +386,12 @@ class _StudentScreenState extends State<StudentScreen> {
           child: StreamBuilder<QuerySnapshot>(
             stream: _dbService.getStudentHistory(widget.userData['id_number']),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting)
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
-              if (!snapshot.hasData || snapshot.data!.docs.isEmpty)
+              }
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                 return const Center(child: Text("Belum ada riwayat absen."));
+              }
 
               var docs = snapshot.data!.docs;
 

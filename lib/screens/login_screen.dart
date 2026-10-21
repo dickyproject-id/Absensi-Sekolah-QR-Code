@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen>
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('userData', jsonEncode(userData));
     } catch (e) {
-      print("Gagal simpan sesi: $e");
+      debugPrint("Gagal simpan sesi: $e");
     }
   }
 
@@ -116,6 +116,7 @@ class _LoginScreenState extends State<LoginScreen>
 
       if (userData != null) {
         await _saveSession(userData);
+        if (!mounted) return;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => StudentScreen(userData: userData)),
@@ -150,6 +151,7 @@ class _LoginScreenState extends State<LoginScreen>
 
       if (userData != null) {
         await _saveSession(userData);
+        if (!mounted) return;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => TeacherScreen(userData: userData)),
@@ -447,9 +449,9 @@ class _LoginScreenState extends State<LoginScreen>
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
@@ -459,7 +461,7 @@ class _LoginScreenState extends State<LoginScreen>
             child: Text(
               text,
               style: TextStyle(
-                color: color.withOpacity(0.8),
+                color: color.withValues(alpha: 0.8),
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
               ),

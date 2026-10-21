@@ -133,7 +133,7 @@ class _SuperAdminScreenState extends State<SuperAdminScreen> {
 
               // 1. INPUT ROLE
               DropdownButtonFormField<String>(
-                value: _selectedRole,
+                initialValue: _selectedRole,
                 style: _inputStyle.copyWith(color: Colors.black),
                 decoration: const InputDecoration(
                   labelText: "Peran (Role)",
@@ -182,7 +182,7 @@ class _SuperAdminScreenState extends State<SuperAdminScreen> {
                 children: [
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      value: _selectedGender,
+                      initialValue: _selectedGender,
                       style: _inputStyle.copyWith(color: Colors.black),
                       decoration: const InputDecoration(
                         labelText: "Gender",
@@ -199,7 +199,7 @@ class _SuperAdminScreenState extends State<SuperAdminScreen> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      value: _selectedReligion,
+                      initialValue: _selectedReligion,
                       isExpanded: true,
                       style: _inputStyle.copyWith(color: Colors.black),
                       decoration: const InputDecoration(

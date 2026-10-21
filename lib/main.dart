@@ -132,8 +132,9 @@ class _CheckAuthState extends State<CheckAuth> {
         }
       } catch (e) {
         // Jika data di memori rusak (corrupt), bersihkan dan minta login ulang
-        print("Session Corrupt: $e");
+        debugPrint("Session Corrupt: $e");
         await prefs.clear();
+        if (!mounted) return;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const LoginScreen()),

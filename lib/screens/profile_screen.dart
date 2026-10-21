@@ -44,8 +44,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       DateTime now = DateTime.now();
       int age = now.year - dob.year;
       if (now.month < dob.month ||
-          (now.month == dob.month && now.day < dob.day))
+          (now.month == dob.month && now.day < dob.day)) {
         age--;
+      }
       return "$age Tahun";
     } catch (e) {
       return '-';
@@ -135,6 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         );
       } catch (e) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text("Gagal ganti foto: $e"),
@@ -240,6 +242,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             return;
                           }
 
+                          final messenger = ScaffoldMessenger.of(context);
                           setStateDialog(() => isDialogLoading = true);
 
                           bool success = await _dbService.changePassword(
@@ -247,11 +250,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             n.text.trim(),
                           );
 
-                          if (!mounted) return;
+                          if (!ctx.mounted) return;
 
                           if (success) {
                             Navigator.pop(ctx);
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            messenger.showSnackBar(
                               const SnackBar(
                                 content: Text("Sukses ganti password!"),
                                 backgroundColor: Colors.green,
@@ -259,7 +262,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             );
                           } else {
                             setStateDialog(() => isDialogLoading = false);
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            messenger.showSnackBar(
                               const SnackBar(
                                 content: Text("Gagal memperbarui database."),
                                 backgroundColor: Colors.red,

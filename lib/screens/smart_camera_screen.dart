@@ -171,7 +171,7 @@ class _SmartCameraScreenState extends State<SmartCameraScreen> {
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: _statusColor.withOpacity(0.8),
+                color: _statusColor.withValues(alpha: 0.8),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(

@@ -96,7 +96,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
               top: 40,
               right: 20,
               child: CircleAvatar(
-                backgroundColor: Colors.black.withOpacity(0.5),
+                backgroundColor: Colors.black.withValues(alpha: 0.5),
                 radius: 20,
                 child: IconButton(
                   padding: EdgeInsets.zero,
@@ -126,6 +126,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
   void _shareQR() async {
     if (_qrData.isEmpty) return;
     try {
+      String timeFormatted = _selectedTime.format(context);
       final Uint8List? image = await _screenshotController.capture();
       if (image != null) {
         final directory = await getTemporaryDirectory();
@@ -133,13 +134,16 @@ class _TeacherScreenState extends State<TeacherScreen> {
           '${directory.path}/qr_absen_${_classCodeCtrl.text}.png',
         ).create();
         await file.writeAsBytes(image);
-        await Share.shareXFiles(
-          [XFile(file.path)],
-          text:
-              'Absensi Kelas ${_classCodeCtrl.text.toUpperCase()} - ${DateFormat('dd MMM yyyy').format(DateTime.now())}. Batas: ${_selectedTime.format(context)}',
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(file.path)],
+            text:
+                'Absensi Kelas ${_classCodeCtrl.text.toUpperCase()} - ${DateFormat('dd MMM yyyy').format(DateTime.now())}. Batas: $timeFormatted',
+          ),
         );
       }
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Gagal Share: $e"), backgroundColor: Colors.red),
       );
@@ -354,7 +358,8 @@ class _TeacherScreenState extends State<TeacherScreen> {
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: () async {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    final messenger = ScaffoldMessenger.of(context);
+                    messenger.showSnackBar(
                       const SnackBar(
                         content: Text("Sedang menyiapkan Excel..."),
                       ),
@@ -370,8 +375,7 @@ class _TeacherScreenState extends State<TeacherScreen> {
                     );
 
                     if (filePath == "empty") {
-                      if (!mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
+                      messenger.showSnackBar(
                         const SnackBar(
                           content: Text("Data kosong tidak bisa di export"),
                           backgroundColor: Colors.orange,
@@ -381,10 +385,12 @@ class _TeacherScreenState extends State<TeacherScreen> {
                       String dateStr = DateFormat(
                         'dd-MM-yyyy',
                       ).format(_selectedDate);
-                      await Share.shareXFiles(
-                        [XFile(filePath)],
-                        text:
-                            "Laporan Kehadiran Kelas ${_classCodeCtrl.text.toUpperCase()} Tanggal $dateStr",
+                      await SharePlus.instance.share(
+                        ShareParams(
+                          files: [XFile(filePath)],
+                          text:
+                              "Laporan Kehadiran Kelas ${_classCodeCtrl.text.toUpperCase()} Tanggal $dateStr",
+                        ),
                       );
                     }
                   },
@@ -414,8 +420,9 @@ class _TeacherScreenState extends State<TeacherScreen> {
                   DateFormat('yyyy-MM-dd').format(_selectedDate),
                 ),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting)
+                  if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
+                  }
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return Center(
                       child: Text(
@@ -466,8 +473,9 @@ class _TeacherScreenState extends State<TeacherScreen> {
                         child: ListTile(
                           leading: GestureDetector(
                             onTap: () {
-                              if (data['photo_base64'] != null)
+                              if (data['photo_base64'] != null) {
                                 _showZoomImage(data['photo_base64']);
+                              }
                             },
                             child: CircleAvatar(
                               backgroundColor: isLate

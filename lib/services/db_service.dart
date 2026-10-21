@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -39,7 +39,7 @@ class DbService {
       }
       return null;
     } catch (e) {
-      print("Error Login: $e");
+      debugPrint("Error Login: $e");
       return null;
     }
   }
@@ -161,7 +161,7 @@ class DbService {
         'created_at': FieldValue.serverTimestamp(),
       });
     } catch (e) {
-      print("Error Submit: $e");
+      debugPrint("Error Submit: $e");
       throw Exception("Gagal mengirim data absen.");
     }
   }
@@ -191,7 +191,7 @@ class DbService {
     try {
       await _db.collection('attendance').doc(docId).delete();
     } catch (e) {
-      print("Error Delete: $e");
+      debugPrint("Error Delete: $e");
       throw Exception("Gagal menghapus riwayat kehadiran.");
     }
   }
@@ -315,7 +315,7 @@ class DbService {
 
       return filePath;
     } catch (e) {
-      print("Export Excel Error: $e");
+      debugPrint("Export Excel Error: $e");
       return null;
     }
   }
@@ -330,7 +330,7 @@ class DbService {
       });
       return true;
     } catch (e) {
-      print("Gagal ganti password: $e");
+      debugPrint("Gagal ganti password: $e");
       return false;
     }
   }
