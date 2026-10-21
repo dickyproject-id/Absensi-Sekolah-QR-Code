@@ -1,0 +1,8 @@
+# Salin file ini menjadi local.properties dan sesuaikan path-nya
+# Copy this file to local.properties and adjust the paths for your machine
+
+sdk.dir=/path/to/your/Android/sdk
+flutter.sdk=/path/to/your/flutter
+flutter.buildMode=debug
+flutter.versionName=1.0.0
+flutter.versionCode=1
